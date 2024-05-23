@@ -14,12 +14,12 @@ declare(strict_types=1);
 namespace SensioLabs\Storyblok\Api;
 
 use OskarStark\Value\TrimmedNonEmptyString;
+use SensioLabs\Storyblok\Api\Bridge\HttpClient\QueryStringHelper;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\HttpClientTrait;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Symfony\Contracts\HttpClient\ResponseInterface;
 use Webmozart\Assert\Assert;
-use function Safe\preg_replace;
 
 /**
  * @author Silas Joisten <silasjoisten@proton.me>
@@ -27,7 +27,6 @@ use function Safe\preg_replace;
 final class StoryblokClient implements StoryblokClientInterface
 {
     use HttpClientTrait;
-
     private HttpClientInterface $client;
     private string $token;
     private int $timeout;
@@ -63,20 +62,15 @@ final class StoryblokClient implements StoryblokClientInterface
          * query_filter[__or][0][field][filter]=value&query_filter[__or][1][field][filter]=value
          */
         if (\array_key_exists('query', $options)) {
-            $query = $options['query'] + ['token' => $this->token];
+            $url = QueryStringHelper::applyQueryString($url, [
+                ...$options['query'],
+                'token' => $this->token,
+            ]);
             unset($options['query']);
-
-            $query = $this->mergeQueryString('', $query, true);
-            Assert::string($query);
-
-            $pattern = '/\[__or]\[(\d+)]/';
-            $query = preg_replace($pattern, '[__or][]', $query);
-
-            if (str_contains($url, '?')) {
-                $url .= '&'.$query;
-            } else {
-                $url .= '?'.$query;
-            }
+        } else {
+            $options['query'] = [
+                'token' => $this->token,
+            ];
         }
 
         return $this->client->request(
