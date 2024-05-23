@@ -28,6 +28,7 @@ final readonly class NotInFilter extends Filter
         private string $field,
         array|string $value,
     ) {
+        TrimmedNonEmptyString::fromString($field);
 
         $formattedValue = $value;
 

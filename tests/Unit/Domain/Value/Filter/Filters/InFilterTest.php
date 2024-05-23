@@ -69,7 +69,7 @@ final class InFilterTest extends FilterTestCase
      *
      * @dataProvider invalidValues
      */
-    public function valueInvalid(mixed $value): void
+    public function valueInvalid(array|string $value): void
     {
         self::expectException(\InvalidArgumentException::class);
 

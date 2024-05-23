@@ -22,6 +22,7 @@ final readonly class GreaterThanFloatFilter extends Filter
         private string $field,
         private float $value,
     ) {
+        TrimmedNonEmptyString::fromString($field);
     }
 
     public function field(): string
