@@ -53,7 +53,10 @@ final class StoriesApi implements StoriesApiInterface
         }
 
         if (null !== $filters) {
-            $parameter = array_merge($parameter, ...array_map(static fn (Filter $filter): array => $filter->toArray(), $filters->toArray()));
+            $parameter = array_merge(
+                $parameter,
+                ...array_map(static fn (Filter $filter): array => $filter->toArray(), $filters->toArray())
+            );
         }
 
         try {
@@ -100,7 +103,10 @@ final class StoriesApi implements StoriesApiInterface
         }
 
         if (null !== $filters) {
-            $parameter = array_merge($parameter, ...array_map(static fn (Filter $filter): array => $filter->toArray(), $filters->toArray()));
+            $parameter = array_merge(
+                $parameter,
+                ...array_map(static fn (Filter $filter): array => $filter->toArray(), $filters->toArray())
+            );
         }
 
         try {
