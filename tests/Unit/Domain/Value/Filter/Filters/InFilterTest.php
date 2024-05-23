@@ -68,6 +68,8 @@ final class InFilterTest extends FilterTestCase
      * @test
      *
      * @dataProvider invalidValues
+     *
+     * @param array<mixed>|string $value
      */
     public function valueInvalid(array|string $value): void
     {
