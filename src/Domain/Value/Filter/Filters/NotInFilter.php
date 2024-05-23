@@ -37,7 +37,10 @@ final readonly class NotInFilter extends Filter
         }
 
         Assert::isArray($formattedValue);
+        Assert::minCount($formattedValue, 1);
         Assert::allString($formattedValue);
+        Assert::allStringNotEmpty($value);
+        Assert::allNotWhitespaceOnly($value);
         $this->value = implode(',', $formattedValue);
     }
 
