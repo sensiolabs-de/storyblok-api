@@ -22,7 +22,6 @@ final readonly class LessThanDateFilter extends Filter
         private string $field,
         private \DateTimeInterface $value,
     ) {
-        TrimmedNonEmptyString::fromString($field);
     }
 
     public function field(): string

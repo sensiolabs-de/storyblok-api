@@ -28,8 +28,6 @@ final readonly class InFilter extends Filter
         private string $field,
         array|string $value,
     ) {
-        TrimmedNonEmptyString::fromString($field);
-
         $formattedValue = $value;
 
         if (\is_string($value)) {

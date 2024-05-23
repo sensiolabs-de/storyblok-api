@@ -22,7 +22,6 @@ final readonly class LessThanIntFilter extends Filter
         private string $field,
         private int $value,
     ) {
-        TrimmedNonEmptyString::fromString($field);
     }
 
     public function field(): string
