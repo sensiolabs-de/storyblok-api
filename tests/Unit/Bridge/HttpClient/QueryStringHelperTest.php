@@ -31,7 +31,7 @@ class QueryStringHelperTest extends TestCase
     }
 
     /**
-     * @return iterable<array{string, string, array}>
+     * @return iterable<array{string, string, array<int|string, mixed>}>
      */
     public static function provideTestCases(): iterable
     {

@@ -28,7 +28,8 @@ use function Safe\preg_replace;
  *  Instead of generating the required format, the symfony/http-client generates a query string that looks like:
  *  query_filter[__or][0][field][filter]=value&query_filter[__or][1][field][filter]=value
  *
- * @author Silas Joisten
+ * @author Silas Joisten <silasjoisten@proton.me>
+ * @author Simon André <smn.andre@gmail.com>
  */
 final class QueryStringHelper
 {
