@@ -27,7 +27,6 @@ final readonly class OrFilter extends Filter
         $this->filters = new FilterCollection($filters);
 
         Assert::minCount($this->filters, 2);
-        Assert::allNotInstanceOf($this->filters, self::class);
     }
 
     public function toArray(): array
