@@ -19,11 +19,11 @@ use SensioLabs\Storyblok\Api\Bridge\HttpClient\QueryStringHelper;
 class QueryStringHelperTest extends TestCase
 {
     /**
+     * @test
+     *
      * @dataProvider provideTestCases
      *
      * @param array<int|string, mixed> $parameters
-     *
-     * @test
      */
     public function itAppliesQueryString(string $expected, string $url, array $parameters): void
     {
@@ -33,7 +33,7 @@ class QueryStringHelperTest extends TestCase
     /**
      * @return iterable<array{string, string, array<int|string, mixed>}>
      */
-    public static function provideTestCases(): iterable
+    public function provideTestCases(): iterable
     {
         yield 'Empty parameters' => [
             'https://example.com',

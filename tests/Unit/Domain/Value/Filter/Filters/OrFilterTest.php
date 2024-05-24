@@ -57,6 +57,16 @@ final class OrFilterTest extends FilterTestCase
 
     /**
      * @test
+     */
+    public function field(): void
+    {
+        $filter = new OrFilter(new InFilter('title', 'Fancy title'), new LikeFilter('title', '*test'));
+
+        self::assertSame('title|title', $filter->field());
+    }
+
+    /**
+     * @test
      *
      * @dataProvider invalidValues
      *
