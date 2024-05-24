@@ -88,4 +88,30 @@ final class OrFilterTest extends FilterTestCase
 
         yield 'one filter passed' => [[new InFilter($faker->word(), $faker->word())]];
     }
+
+    /**
+     * @test
+     */
+    public function filtersCanBeTheSameForField(): void
+    {
+        $filter = new OrFilter(
+            new LikeFilter('title', 'Fancy title'),
+            new LikeFilter('title', '*test'),
+        );
+
+        self::assertSame([
+            Operation::Or->value => [
+                [
+                    'title' => [
+                        Operation::Like->value => 'Fancy title',
+                    ],
+                ],
+                [
+                    'title' => [
+                        Operation::Like->value => '*test',
+                    ],
+                ],
+            ],
+        ], $filter->toArray());
+    }
 }

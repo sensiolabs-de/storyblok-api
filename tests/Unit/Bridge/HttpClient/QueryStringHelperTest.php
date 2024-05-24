@@ -33,7 +33,7 @@ class QueryStringHelperTest extends TestCase
     /**
      * @return iterable<array{string, string, array<int|string, mixed>}>
      */
-    public function provideTestCases(): iterable
+    public static function provideTestCases(): iterable
     {
         yield 'Empty parameters' => [
             'https://example.com',
