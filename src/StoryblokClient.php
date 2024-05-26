@@ -14,6 +14,8 @@ declare(strict_types=1);
 namespace SensioLabs\Storyblok\Api;
 
 use OskarStark\Value\TrimmedNonEmptyString;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
 use SensioLabs\Storyblok\Api\Bridge\HttpClient\QueryStringHelper;
 use Symfony\Component\HttpClient\HttpClient;
 use Symfony\Component\HttpClient\HttpClientTrait;
@@ -37,6 +39,7 @@ final class StoryblokClient implements StoryblokClientInterface
         string $token,
         int $timeout = 4,
         ?HttpClientInterface $storyblokClient = null,
+        private LoggerInterface $logger = new NullLogger(),
     ) {
         $this->client = $storyblokClient ?? HttpClient::createForBaseUri($baseUri);
         $this->token = TrimmedNonEmptyString::fromString($token, '$token must not be an empty string')->toString();
@@ -48,9 +51,7 @@ final class StoryblokClient implements StoryblokClientInterface
         Assert::notStartsWith($url, 'http', '$url should be relative: Got: %s');
         Assert::startsWith($url, '/', '$url should start with a "/". Got: %s');
 
-        if (!\array_key_exists('timeout', $options)) {
-            $options['timeout'] = $this->timeout;
-        }
+        $options['timeout'] ??= $this->timeout;
 
         /*
          * This workaround is necessary because the symfony/http-client does not support URL array syntax like in JavaScript.
@@ -73,18 +74,24 @@ final class StoryblokClient implements StoryblokClientInterface
             ];
         }
 
-        return $this->client->request(
-            $method,
-            $url,
-            array_merge_recursive(
-                $options,
-                [
-                    'headers' => [
-                        'Accept' => 'application/json',
-                        'Content-Type' => 'application/json',
+        try {
+            return $this->client->request(
+                $method,
+                $url,
+                array_merge_recursive(
+                    $options,
+                    [
+                        'headers' => [
+                            'Accept' => 'application/json',
+                            'Content-Type' => 'application/json',
+                        ],
                     ],
-                ],
-            ),
-        );
+                ),
+            );
+        } catch (\Throwable $e) {
+            $this->logger->error($e->getMessage());
+
+            throw $e;
+        }
     }
 }
