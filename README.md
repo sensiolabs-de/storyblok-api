@@ -27,6 +27,31 @@ $client = new StoryblokClient(
 $client->request('GET', '/api/something', $options);
 ```
 
+## Spaces
+
+In your code you should type-hint to `SensioLabs\Storyblok\Api\SpacesApiInterface`
+
+### Get the current space
+
+Returns the space associated with the current token.
+
+```php
+use SensioLabs\Storyblok\Api\SpacesApi;
+use SensioLabs\Storyblok\Api\StoryblokClient;
+
+$client = new StoryblokClient(/* ... */);
+$spacesApi = new SpacesApi($client);
+
+$response = $spacesApi->me();
+
+// Example response
+$space = $response->getSpace();
+$space->getName(); // Example Space
+$space->getDomain(); // https:/example.com
+$space->getVersion(); // 1716713992
+$space->getLanguages(); // ['de', 'en']
+```
+
 ## Stories
 
 In your code you should type-hint to `SensioLabs\Storyblok\Api\StoriesApiInterface`
