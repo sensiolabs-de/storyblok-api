@@ -248,31 +248,78 @@ final class StoryblokProvider extends BaseProvider
 
     /**
      * @param array{
-     *   datasource_entries?: list<array{
+     *      datasources?: list<array<string, mixed>>,
+     *  } $overrides
+     *
+     * @return array{
+     *     datasources: list<array<string, mixed>>,
+     * }
+     */
+    public function datasourcesResponse(array $overrides = []): array
+    {
+        $response = [
+            'datasources' => [],
+        ];
+
+        for ($i = 0; $this->generator->numberBetween(1, 5) > $i; ++$i) {
+            $response['datasources'][] = $this->datasourceResponse();
+        }
+
+        return array_replace_recursive(
+            $response,
+            $overrides,
+        );
+    }
+
+    /**
+     * @param array{
+     *   datasource?: list<array{
      *     id?: int,
      *     name?: string,
-     *     value?: string,
-     *     dimension_value?: string|null
+     *     slug?: string,
+     *     dimensions?: list<array{
+     *      id?: int,
+     *      name?: string,
+     *      entry_value?: string,
+     *      datasource_id?: int,
+     *      created_at?: string,
+     *      updated_at?: string,
+     *     }>,
      * }>,
      * } $overrides
      *
      * @return array{
-     *   datasource_entries: list<array{
+     *   id: int,
+     *   name: string,
+     *   slug: string,
+     *   dimensions: list<array{
      *     id: int,
      *     name: string,
-     *     value: string,
-     *     dimension_value: string|null
+     *     entry_value: string,
+     *     datasource_id: int,
+     *     created_at: string,
+     *     updated_at: string,
      *   }>,
      * }
      */
     public function datasourceResponse(array $overrides = []): array
     {
         $response = [
-            'datasource_entries' => [],
+            'id' => $id = $this->generator->numberBetween(1),
+            'name' => $this->generator->word(),
+            'slug' => $this->generator->slug(),
+            'dimensions' => [],
         ];
 
-        for ($i = 0; $this->generator->numberBetween(1, 10) > $i; ++$i) {
-            $response['datasource_entries'][] = $this->datasourceEntryResponse();
+        for ($i = 0; $this->generator->numberBetween(0, 3) > $i; ++$i) {
+            $response['dimensions'][] = [
+                'id' => $this->generator->numberBetween(1),
+                'name' => $this->generator->word(),
+                'entry_value' => $this->generator->slug(),
+                'datasource_id' => $id,
+                'created_at' => $this->generator->dateTimeThisYear()->format('Y-m-d\TH:i:s.v\Z'),
+                'updated_at' => $this->generator->dateTimeThisYear()->format('Y-m-d\TH:i:s.v\Z'),
+            ];
         }
 
         return array_replace_recursive(
@@ -337,6 +384,41 @@ final class StoryblokProvider extends BaseProvider
             'version' => $this->generator->numberBetween(1),
             'language_codes' => ['de', 'fr'],
         ];
+
+        return array_replace_recursive(
+            $response,
+            $overrides,
+        );
+    }
+
+    /**
+     * @param array{
+     *   datasource_entries?: list<array{
+     *     id?: int,
+     *     name?: string,
+     *     value?: string,
+     *     dimension_value?: string|null
+     * }>,
+     * } $overrides
+     *
+     * @return array{
+     *   datasource_entries: list<array{
+     *     id: int,
+     *     name: string,
+     *     value: string,
+     *     dimension_value: string|null
+     *   }>,
+     * }
+     */
+    public function datasourceEntriesResponse(array $overrides = []): array
+    {
+        $response = [
+            'datasource_entries' => [],
+        ];
+
+        for ($i = 0; $this->generator->numberBetween(1, 10) > $i; ++$i) {
+            $response['datasource_entries'][] = $this->datasourceEntryResponse();
+        }
 
         return array_replace_recursive(
             $response,

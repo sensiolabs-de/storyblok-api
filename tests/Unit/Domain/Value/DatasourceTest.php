@@ -15,7 +15,6 @@ namespace SensioLabs\Storyblok\Api\Tests\Unit\Domain\Value;
 
 use PHPUnit\Framework\TestCase;
 use SensioLabs\Storyblok\Api\Domain\Value\Datasource;
-use SensioLabs\Storyblok\Api\Domain\Value\Datasource\Dimension;
 use SensioLabs\Storyblok\Api\Tests\Util\FakerTrait;
 
 final class DatasourceTest extends TestCase
@@ -27,16 +26,13 @@ final class DatasourceTest extends TestCase
      */
     public function entries(): void
     {
-        $faker = self::faker();
+        $response = self::faker()->datasourceResponse();
 
-        $datasource = new Datasource(
-            $name = $faker->word(),
-            $dimension = new Dimension($faker->word()),
-            $response = $faker->datasourceResponse(),
-        );
+        $datasource = Datasource::fromArray($response);
 
-        self::assertSame($datasource->name, $name);
-        self::assertTrue($datasource->dimension->equals($dimension));
-        self::assertCount(\count($response['datasource_entries']), $datasource->entries);
+        self::assertSame($response['name'], $datasource->name);
+        self::assertSame($response['slug'], $datasource->slug);
+        self::assertSame($response['id'], $datasource->id->value);
+        self::assertCount(\count($response['dimensions']), $datasource->dimensions);
     }
 }

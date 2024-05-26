@@ -13,40 +13,50 @@ declare(strict_types=1);
 
 namespace SensioLabs\Storyblok\Api\Domain\Value;
 
-use OskarStark\Value\TrimmedNonEmptyString;
-use SensioLabs\Storyblok\Api\Domain\Value\Datasource\Dimension;
-use SensioLabs\Storyblok\Api\Domain\Value\Datasource\Entry;
 use Webmozart\Assert\Assert;
 
+/**
+ * @see https://www.storyblok.com/docs/api/content-delivery/v2/datasources/the-datasource-object
+ */
 final readonly class Datasource
 {
-    /**
-     * @var Entry[]
-     */
-    public array $entries;
+    public function __construct(
+        public Id $id,
+        /**
+         * The complete name provided for the datasource.
+         */
+        public string $name,
+        /**
+         * The unique slug of the datasource.
+         */
+        public string $slug,
+        /**
+         * The dimensions (e.g., per country, region, language, or other context) defined for the datasource.
+         *
+         * @var array<DatasourceDimension>
+         */
+        public array $dimensions,
+    ) {
+        Assert::notEmpty($name);
+        Assert::notEmpty($slug);
+        Assert::allIsInstanceOf($dimensions, DatasourceDimension::class);
+    }
 
     /**
      * @param array<string, mixed> $values
      */
-    public function __construct(
-        public string $name,
-        public Dimension $dimension,
-        array $values,
-    ) {
-        TrimmedNonEmptyString::fromString($name);
+    public static function fromArray(array $values): self
+    {
+        Assert::same(['id', 'name', 'slug', 'dimensions'], array_keys($values));
 
-        Assert::keyExists($values, 'datasource_entries');
-        Assert::isArray($values['datasource_entries']);
+        Assert::isArray($values['dimensions']);
+        $dimensions = array_map(DatasourceDimension::fromArray(...), $values['dimensions']);
 
-        $entries = [];
-
-        if ([] !== $values['datasource_entries']) {
-            foreach ($values['datasource_entries'] as $entry) {
-                Assert::isArray($entry);
-                $entries[] = new Entry($entry);
-            }
-        }
-
-        $this->entries = $entries;
+        return new self(
+            new Id($values['id']),
+            $values['name'],
+            $values['slug'],
+            $dimensions,
+        );
     }
 }
