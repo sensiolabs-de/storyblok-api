@@ -26,6 +26,7 @@ use SensioLabs\Storyblok\Api\Response\StoryResponse;
  */
 interface StoriesApiInterface
 {
+    public const int PER_PAGE = 25;
     public const int MAX_PER_PAGE = 100;
 
     public function all(string $locale = 'default', ?Pagination $pagination = null, ?SortBy $sortBy = null, ?FilterCollection $filters = null): StoriesResponse;

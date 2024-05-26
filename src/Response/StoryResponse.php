@@ -13,14 +13,12 @@ declare(strict_types=1);
 
 namespace SensioLabs\Storyblok\Api\Response;
 
+use SensioLabs\Storyblok\Api\Domain\Value\Story;
 use Webmozart\Assert\Assert;
 
 final readonly class StoryResponse
 {
-    /**
-     * @var array<string, mixed>
-     */
-    public array $story;
+    public Story $story;
     public int $cv;
 
     /**
@@ -39,7 +37,7 @@ final readonly class StoryResponse
     public function __construct(array $values)
     {
         Assert::keyExists($values, 'story');
-        $this->story = $values['story'];
+        $this->story = Story::fromArray($values['story']);
 
         Assert::keyExists($values, 'cv');
         Assert::integer($values['cv']);

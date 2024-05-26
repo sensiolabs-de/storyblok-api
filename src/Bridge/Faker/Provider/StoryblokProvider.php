@@ -43,17 +43,15 @@ final class StoryblokProvider extends BaseProvider
         ];
 
         for ($i = 0; $this->generator->numberBetween(1, 5) > $i; ++$i) {
-            $response['stories'][] = [
-                'uuid' => $this->generator->uuid(),
-            ];
+            $response['stories'][] = $this->storyResponse()['story'];
         }
 
         for ($i = 0; $this->generator->numberBetween(1, 5) > $i; ++$i) {
-            $response['rels'][] = $this->generator->url();
+            $response['rels'][] = [];
         }
 
         for ($i = 0; $this->generator->numberBetween(1, 5) > $i; ++$i) {
-            $response['links'][] = $this->generator->url();
+            $response['links'][] = [];
         }
 
         return array_replace_recursive(
@@ -81,7 +79,22 @@ final class StoryblokProvider extends BaseProvider
     {
         $response = [
             'story' => [
+                'id' => $this->generator->numberBetween(1, 1000000),
+                'name' => $this->generator->sentence(),
+                'slug' => $this->generator->slug(),
+                'full_slug' => $this->generator->slug(),
+                'content' => [
+                    'component' => $this->generator->word(),
+                ],
+                'position' => $this->generator->numberBetween(1, 100),
+                'lang' => $this->generator->randomElement(['de', 'fr', 'default']),
+                'is_startpage' => $this->generator->boolean(),
                 'uuid' => $this->generator->uuid(),
+                'alternates' => [],
+                'tag_list' => [],
+                'first_published_at' => $this->generator->dateTime()->format('Y-m-d\TH:i:s.v\Z'),
+                'created_at' => $this->generator->dateTime()->format('Y-m-d\TH:i:s.v\Z'),
+                'published_at' => $this->generator->dateTime()->format('Y-m-d\TH:i:s.v\Z'),
             ],
             'cv' => $this->generator->randomNumber(),
             'rels' => [],
@@ -89,11 +102,11 @@ final class StoryblokProvider extends BaseProvider
         ];
 
         for ($i = 0; $this->generator->numberBetween(1, 5) > $i; ++$i) {
-            $response['rels'][] = $this->generator->url();
+            $response['rels'][] = [];
         }
 
         for ($i = 0; $this->generator->numberBetween(1, 5) > $i; ++$i) {
-            $response['links'][] = $this->generator->url();
+            $response['links'][] = [];
         }
 
         return array_replace_recursive(
