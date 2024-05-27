@@ -43,13 +43,6 @@ $client = new StoryblokClient(/* ... */);
 $spacesApi = new SpacesApi($client);
 
 $response = $spacesApi->me();
-
-// Example response
-$space = $response->getSpace();
-$space->getName(); // Example Space
-$space->getDomain(); // https:/example.com
-$space->getVersion(); // 1716713992
-$space->getLanguages(); // ['de', 'en']
 ```
 
 ## Stories
