@@ -33,7 +33,7 @@ final class StoriesApi implements StoriesApiInterface
     ) {
     }
 
-    public function all(string $locale = 'default', ?Pagination $pagination = null, ?SortBy $sortBy = null, ?FilterCollection $filters = null): StoriesResponse
+    public function all(string $locale = 'default', ?int $cacheVersion = null, ?Pagination $pagination = null, ?SortBy $sortBy = null, ?FilterCollection $filters = null): StoriesResponse
     {
         Assert::stringNotEmpty($locale);
 
@@ -44,6 +44,11 @@ final class StoriesApi implements StoriesApiInterface
         Assert::lessThanEq($pagination->perPage, self::MAX_PER_PAGE);
 
         $parameter = [];
+
+        if (null !== $cacheVersion) {
+            Assert::positiveInteger($cacheVersion);
+            $parameter['cv'] = $cacheVersion;
+        }
 
         if (null !== $sortBy) {
             $parameter = [
@@ -79,7 +84,7 @@ final class StoriesApi implements StoriesApiInterface
         }
     }
 
-    public function allByContentType(string $contentType, string $locale = 'default', ?Pagination $pagination = null, ?SortBy $sortBy = null, ?FilterCollection $filters = null): StoriesResponse
+    public function allByContentType(string $contentType, string $locale = 'default', ?int $cacheVersion = null, ?Pagination $pagination = null, ?SortBy $sortBy = null, ?FilterCollection $filters = null): StoriesResponse
     {
         Assert::stringNotEmpty($contentType);
         Assert::stringNotEmpty($locale);
@@ -91,6 +96,11 @@ final class StoriesApi implements StoriesApiInterface
         Assert::lessThanEq($pagination->perPage, self::MAX_PER_PAGE);
 
         $parameter = [];
+
+        if (null !== $cacheVersion) {
+            Assert::positiveInteger($cacheVersion);
+            $parameter['cv'] = $cacheVersion;
+        }
 
         if (null !== $sortBy) {
             $parameter = [
@@ -127,20 +137,27 @@ final class StoriesApi implements StoriesApiInterface
         }
     }
 
-    public function bySlug(string $slug, string $locale = 'default'): StoryResponse
+    public function bySlug(string $slug, string $locale = 'default', ?int $cacheVersion = null): StoryResponse
     {
         Assert::stringNotEmpty($locale);
         Assert::stringNotEmpty($slug);
+
+        $query = [];
+
+        if (null !== $cacheVersion) {
+            Assert::positiveInteger($cacheVersion);
+            $query['cv'] = $cacheVersion;
+        }
 
         try {
             $response = $this->client->request(
                 'GET',
                 sprintf('/v2/cdn/stories/%s', $slug),
                 [
-                    'query' => [
+                    'query' => array_merge($query, [
                         'language' => $locale,
                         'fallback_lang' => 'default',
-                    ],
+                    ]),
                 ],
             );
 
@@ -154,20 +171,27 @@ final class StoriesApi implements StoriesApiInterface
         }
     }
 
-    public function byUuid(Uuid $uuid, string $locale = 'default'): StoryResponse
+    public function byUuid(Uuid $uuid, string $locale = 'default', ?int $cacheVersion = null): StoryResponse
     {
         Assert::stringNotEmpty($locale);
+
+        $query = [];
+
+        if (null !== $cacheVersion) {
+            Assert::positiveInteger($cacheVersion);
+            $query['cv'] = $cacheVersion;
+        }
 
         try {
             $response = $this->client->request(
                 'GET',
                 sprintf('/v2/cdn/stories/%s', $uuid->value),
                 [
-                    'query' => [
+                    'query' => array_merge($query, [
                         'language' => $locale,
                         'fallback_lang' => 'default',
                         'find_by' => 'uuid',
-                    ],
+                    ]),
                 ],
             );
 
@@ -181,19 +205,26 @@ final class StoriesApi implements StoriesApiInterface
         }
     }
 
-    public function byId(Id $id, string $locale = 'default'): StoryResponse
+    public function byId(Id $id, string $locale = 'default', ?int $cacheVersion = null): StoryResponse
     {
         Assert::stringNotEmpty($locale);
+
+        $query = [];
+
+        if (null !== $cacheVersion) {
+            Assert::positiveInteger($cacheVersion);
+            $query['cv'] = $cacheVersion;
+        }
 
         try {
             $response = $this->client->request(
                 'GET',
                 sprintf('/v2/cdn/stories/%s', $id->value),
                 [
-                    'query' => [
+                    'query' => array_merge($query, [
                         'language' => $locale,
                         'fallback_lang' => 'default',
-                    ],
+                    ]),
                 ],
             );
 

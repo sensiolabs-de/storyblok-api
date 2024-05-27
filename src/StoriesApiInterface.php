@@ -28,13 +28,13 @@ interface StoriesApiInterface
 {
     public const int MAX_PER_PAGE = 100;
 
-    public function all(string $locale = 'default', ?Pagination $pagination = null, ?SortBy $sortBy = null, ?FilterCollection $filters = null): StoriesResponse;
+    public function all(string $locale = 'default', ?int $cacheVersion = null, ?Pagination $pagination = null, ?SortBy $sortBy = null, ?FilterCollection $filters = null): StoriesResponse;
 
-    public function allByContentType(string $contentType, string $locale = 'default', ?Pagination $pagination = null, ?SortBy $sortBy = null, ?FilterCollection $filters = null): StoriesResponse;
+    public function allByContentType(string $contentType, string $locale = 'default', ?int $cacheVersion = null, ?Pagination $pagination = null, ?SortBy $sortBy = null, ?FilterCollection $filters = null): StoriesResponse;
 
-    public function bySlug(string $slug, string $locale = 'default'): StoryResponse;
+    public function bySlug(string $slug, string $locale = 'default', ?int $cacheVersion = null): StoryResponse;
 
-    public function byUuid(Uuid $uuid, string $locale = 'default'): StoryResponse;
+    public function byUuid(Uuid $uuid, string $locale = 'default', ?int $cacheVersion = null): StoryResponse;
 
-    public function byId(Id $id, string $locale = 'default'): StoryResponse;
+    public function byId(Id $id, string $locale = 'default', ?int $cacheVersion = null): StoryResponse;
 }
