@@ -24,17 +24,194 @@ final class DatasourceDimensionTest extends TestCase
     /**
      * @test
      */
-    public function fromArray(): void
+    public function id(): void
     {
-        $response = self::faker()->datasourceResponse()['dimensions'][0];
+        $faker = self::faker();
+        $response = $faker->datasourceDimensionResponse([
+            'id' => $id = $faker->numberBetween(1),
+        ]);
 
-        $dimension = DatasourceDimension::fromArray($response);
+        self::assertSame($id, (new DatasourceDimension($response))->id->value);
+    }
 
-        self::assertSame($response['id'], $dimension->id->value);
-        self::assertSame($response['name'], $dimension->name);
-        self::assertSame($response['entry_value'], $dimension->entryValue);
-        self::assertSame($response['datasource_id'], $dimension->datasourceId->value);
-        self::assertSame($response['created_at'], $dimension->createdAt->format('Y-m-d\TH:i:s.v\Z'));
-        self::assertSame($response['updated_at'], $dimension->updatedAt->format('Y-m-d\TH:i:s.v\Z'));
+    /**
+     * @test
+     */
+    public function idKeyMustExist(): void
+    {
+        $faker = self::faker();
+        $response = $faker->datasourceDimensionResponse();
+        unset($response['id']);
+
+        self::expectException(\InvalidArgumentException::class);
+
+        new DatasourceDimension($response);
+    }
+
+    /**
+     * @test
+     */
+    public function name(): void
+    {
+        $faker = self::faker();
+        $response = $faker->datasourceDimensionResponse([
+            'name' => $name = $faker->word(),
+        ]);
+
+        self::assertSame($name, (new DatasourceDimension($response))->name);
+    }
+
+    /**
+     * @test
+     */
+    public function nameKeyMustExist(): void
+    {
+        $faker = self::faker();
+        $response = $faker->datasourceDimensionResponse();
+        unset($response['name']);
+
+        self::expectException(\InvalidArgumentException::class);
+
+        new DatasourceDimension($response);
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider \Ergebnis\DataProvider\StringProvider::blank()
+     * @dataProvider \Ergebnis\DataProvider\StringProvider::empty()
+     */
+    public function nameInvalid(string $value): void
+    {
+        $faker = self::faker();
+        $response = $faker->datasourceDimensionResponse(['name' => $value]);
+
+        self::expectException(\InvalidArgumentException::class);
+
+        new DatasourceDimension($response);
+    }
+
+    /**
+     * @test
+     */
+    public function entryValue(): void
+    {
+        $faker = self::faker();
+        $response = $faker->datasourceDimensionResponse([
+            'entry_value' => $entryValue = $faker->word(),
+        ]);
+
+        self::assertSame($entryValue, (new DatasourceDimension($response))->entryValue);
+    }
+
+    /**
+     * @test
+     */
+    public function entryValueKeyMustExist(): void
+    {
+        $faker = self::faker();
+        $response = $faker->datasourceDimensionResponse();
+        unset($response['entry_value']);
+
+        self::expectException(\InvalidArgumentException::class);
+
+        new DatasourceDimension($response);
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider \Ergebnis\DataProvider\StringProvider::blank()
+     * @dataProvider \Ergebnis\DataProvider\StringProvider::empty()
+     */
+    public function entryValueInvalid(string $value): void
+    {
+        $faker = self::faker();
+        $response = $faker->datasourceDimensionResponse(['entry_value' => $value]);
+
+        self::expectException(\InvalidArgumentException::class);
+
+        new DatasourceDimension($response);
+    }
+
+    /**
+     * @test
+     */
+    public function datasourceId(): void
+    {
+        $faker = self::faker();
+        $response = $faker->datasourceDimensionResponse([
+            'datasource_id' => $id = $faker->numberBetween(1),
+        ]);
+
+        self::assertSame($id, (new DatasourceDimension($response))->datasourceId->value);
+    }
+
+    /**
+     * @test
+     */
+    public function datasourceIdKeyMustExist(): void
+    {
+        $faker = self::faker();
+        $response = $faker->datasourceDimensionResponse();
+        unset($response['datasource_id']);
+
+        self::expectException(\InvalidArgumentException::class);
+
+        new DatasourceDimension($response);
+    }
+
+    /**
+     * @test
+     */
+    public function createdAt(): void
+    {
+        $faker = self::faker();
+        $response = $faker->datasourceDimensionResponse([
+            'created_at' => $createdAt = $faker->dateTime()->format('Y-m-d H:i'),
+        ]);
+
+        self::assertSame($createdAt, (new DatasourceDimension($response))->createdAt->format('Y-m-d H:i'));
+    }
+
+    /**
+     * @test
+     */
+    public function createdAtKeyMustExist(): void
+    {
+        $faker = self::faker();
+        $response = $faker->datasourceDimensionResponse();
+        unset($response['created_at']);
+
+        self::expectException(\InvalidArgumentException::class);
+
+        new DatasourceDimension($response);
+    }
+
+    /**
+     * @test
+     */
+    public function updatedAt(): void
+    {
+        $faker = self::faker();
+        $response = $faker->datasourceDimensionResponse([
+            'updated_at' => $updatedAt = $faker->dateTime()->format('Y-m-d H:i'),
+        ]);
+
+        self::assertSame($updatedAt, (new DatasourceDimension($response))->updatedAt->format('Y-m-d H:i'));
+    }
+
+    /**
+     * @test
+     */
+    public function updatedAtKeyMustExist(): void
+    {
+        $faker = self::faker();
+        $response = $faker->datasourceDimensionResponse();
+        unset($response['updated_at']);
+
+        self::expectException(\InvalidArgumentException::class);
+
+        new DatasourceDimension($response);
     }
 }

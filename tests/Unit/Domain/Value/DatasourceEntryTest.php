@@ -24,64 +24,169 @@ final class DatasourceEntryTest extends TestCase
     /**
      * @test
      */
+    public function id(): void
+    {
+        $faker = self::faker();
+        $response = $faker->datasourceEntryResponse([
+            'id' => $id = $faker->numberBetween(1),
+        ]);
+
+        self::assertSame($id, (new DatasourceEntry($response))->id->value);
+    }
+
+    /**
+     * @test
+     */
+    public function idKeyMustExist(): void
+    {
+        $faker = self::faker();
+        $response = $faker->datasourceEntryResponse();
+        unset($response['id']);
+
+        self::expectException(\InvalidArgumentException::class);
+
+        new DatasourceEntry($response);
+    }
+
+    /**
+     * @test
+     */
     public function name(): void
     {
-        $values = self::faker()->datasourceEntryResponse();
+        $faker = self::faker();
+        $response = $faker->datasourceEntryResponse([
+            'name' => $name = $faker->word(),
+        ]);
 
-        self::assertSame($values['name'], DatasourceEntry::fromArray($values)->name);
+        self::assertSame($name, (new DatasourceEntry($response))->name);
+    }
+
+    /**
+     * @test
+     */
+    public function nameKeyMustExist(): void
+    {
+        $faker = self::faker();
+        $response = $faker->datasourceEntryResponse();
+        unset($response['name']);
+
+        self::expectException(\InvalidArgumentException::class);
+
+        new DatasourceEntry($response);
     }
 
     /**
      * @test
      *
-     * @dataProvider provideRequiredKeys
+     * @dataProvider \Ergebnis\DataProvider\StringProvider::blank()
+     * @dataProvider \Ergebnis\DataProvider\StringProvider::empty()
      */
-    public function missingKey(string $key): void
+    public function nameInvalid(string $value): void
     {
-        $values = self::faker()->datasourceEntryResponse();
-        unset($values[$key]);
+        $faker = self::faker();
+        $response = $faker->datasourceEntryResponse(['name' => $value]);
 
         self::expectException(\InvalidArgumentException::class);
 
-        DatasourceEntry::fromArray($values);
-    }
-
-    /**
-     * @return iterable<array{0: string}>
-     */
-    public static function provideRequiredKeys(): iterable
-    {
-        return [
-            ['id'],
-            ['name'],
-            ['value'],
-            ['dimension_value'],
-        ];
+        new DatasourceEntry($response);
     }
 
     /**
      * @test
      */
-    public function invalidName(): void
+    public function value(): void
     {
-        $values = self::faker()->datasourceEntryResponse();
-        $values['name'] = ' ';
+        $faker = self::faker();
+        $response = $faker->datasourceEntryResponse([
+            'value' => $value = $faker->word(),
+        ]);
 
-        self::expectException(\InvalidArgumentException::class);
-
-        DatasourceEntry::fromArray($values);
+        self::assertSame($value, (new DatasourceEntry($response))->value);
     }
 
     /**
      * @test
      */
-    public function invalidValue(): void
+    public function valueKeyMustExist(): void
     {
-        $values = self::faker()->datasourceEntryResponse();
-        $values['value'] = ' ';
+        $faker = self::faker();
+        $response = $faker->datasourceEntryResponse();
+        unset($response['value']);
 
         self::expectException(\InvalidArgumentException::class);
 
-        DatasourceEntry::fromArray($values);
+        new DatasourceEntry($response);
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider \Ergebnis\DataProvider\StringProvider::blank()
+     * @dataProvider \Ergebnis\DataProvider\StringProvider::empty()
+     */
+    public function valueInvalid(string $value): void
+    {
+        $faker = self::faker();
+        $response = $faker->datasourceEntryResponse(['value' => $value]);
+
+        self::expectException(\InvalidArgumentException::class);
+
+        new DatasourceEntry($response);
+    }
+
+    /**
+     * @test
+     */
+    public function dimensionValue(): void
+    {
+        $faker = self::faker();
+        $response = $faker->datasourceEntryResponse([
+            'dimension_value' => $dimensionValue = $faker->word(),
+        ]);
+
+        self::assertSame($dimensionValue, (new DatasourceEntry($response))->dimensionValue);
+    }
+
+    /**
+     * @test
+     */
+    public function dimensionValueCanBeNull(): void
+    {
+        $faker = self::faker();
+        $response = $faker->datasourceEntryResponse([
+            'dimension_value' => null,
+        ]);
+
+        self::assertNull((new DatasourceEntry($response))->dimensionValue);
+    }
+
+    /**
+     * @test
+     */
+    public function dimensionValueKeyMustExist(): void
+    {
+        $faker = self::faker();
+        $response = $faker->datasourceEntryResponse();
+        unset($response['dimension_value']);
+
+        self::expectException(\InvalidArgumentException::class);
+
+        new DatasourceEntry($response);
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider \Ergebnis\DataProvider\StringProvider::blank()
+     * @dataProvider \Ergebnis\DataProvider\StringProvider::empty()
+     */
+    public function dimensionValueInvalid(string $value): void
+    {
+        $faker = self::faker();
+        $response = $faker->datasourceEntryResponse(['dimension_value' => $value]);
+
+        self::expectException(\InvalidArgumentException::class);
+
+        new DatasourceEntry($response);
     }
 }

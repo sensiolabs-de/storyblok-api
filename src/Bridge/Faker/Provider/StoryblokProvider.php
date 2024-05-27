@@ -312,15 +312,44 @@ final class StoryblokProvider extends BaseProvider
         ];
 
         for ($i = 0; $this->generator->numberBetween(0, 3) > $i; ++$i) {
-            $response['dimensions'][] = [
-                'id' => $this->generator->numberBetween(1),
-                'name' => $this->generator->word(),
-                'entry_value' => $this->generator->slug(),
-                'datasource_id' => $id,
-                'created_at' => $this->generator->dateTimeThisYear()->format('Y-m-d\TH:i:s.v\Z'),
-                'updated_at' => $this->generator->dateTimeThisYear()->format('Y-m-d\TH:i:s.v\Z'),
-            ];
+            $response['dimensions'][] = $this->datasourceDimensionResponse(['datasource_id' => $id]);
         }
+
+        return array_replace_recursive(
+            $response,
+            $overrides,
+        );
+    }
+
+    /**
+     * @param array{
+     *    id?: int,
+     *    name?: string,
+     *    entry_value?: string,
+     *    datasource_id?: int,
+     *    created_at?: string,
+     *    updated_at?: string,
+     * } $overrides
+     *
+     * @return array{
+     *     id: int,
+     *     name: string,
+     *     entry_value: string,
+     *     datasource_id: int,
+     *     created_at: string,
+     *     updated_at: string,
+     * }
+     */
+    public function datasourceDimensionResponse(array $overrides = []): array
+    {
+        $response = [
+            'id' => $this->generator->numberBetween(1),
+            'name' => $this->generator->word(),
+            'entry_value' => $this->generator->slug(),
+            'datasource_id' => $this->generator->numberBetween(1),
+            'created_at' => $this->generator->dateTimeThisYear()->format('Y-m-d\TH:i:s.v\Z'),
+            'updated_at' => $this->generator->dateTimeThisYear()->format('Y-m-d\TH:i:s.v\Z'),
+        ];
 
         return array_replace_recursive(
             $response,
