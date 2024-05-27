@@ -30,21 +30,21 @@ final readonly class DatasourceEntriesApi implements DatasourceEntriesApiInterfa
 
     public function all(?Pagination $pagination = null): DatasourceEntriesResponse
     {
-        return $this->getDatasourceEntries([], $pagination);
+        return $this->collectionRequest([], $pagination);
     }
 
     public function allByDatasource(string $datasource, ?Pagination $pagination = null): DatasourceEntriesResponse
     {
         Assert::regex($datasource, '/^[a-z0-9-]+$/');
 
-        return $this->getDatasourceEntries(['datasource' => $datasource], $pagination);
+        return $this->collectionRequest(['datasource' => $datasource], $pagination);
     }
 
     public function allByDimension(string $dimension, ?Pagination $pagination = null): DatasourceEntriesResponse
     {
         Assert::regex($dimension, '/^[a-z0-9-]+$/');
 
-        return $this->getDatasourceEntries(['datasource' => $dimension], $pagination);
+        return $this->collectionRequest(['datasource' => $dimension], $pagination);
     }
 
     public function allByDatasourceDimension(string $datasource, string $dimension, ?Pagination $pagination = null): DatasourceEntriesResponse
@@ -52,13 +52,13 @@ final readonly class DatasourceEntriesApi implements DatasourceEntriesApiInterfa
         Assert::regex($datasource, '/^[a-z0-9-]+$/');
         Assert::regex($dimension, '/^[a-z0-9-]+$/');
 
-        return $this->getDatasourceEntries(['datasource' => $datasource, 'dimension' => $dimension], $pagination);
+        return $this->collectionRequest(['datasource' => $datasource, 'dimension' => $dimension], $pagination);
     }
 
     /**
      * @param array<string, mixed> $parameters
      */
-    private function getDatasourceEntries(array $parameters, ?Pagination $pagination = null): DatasourceEntriesResponse
+    private function collectionRequest(array $parameters, ?Pagination $pagination = null): DatasourceEntriesResponse
     {
         $pagination ??= new Pagination(1, self::PER_PAGE);
         Assert::lessThanEq($pagination->perPage, self::MAX_PER_PAGE);
