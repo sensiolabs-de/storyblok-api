@@ -24,44 +24,171 @@ final class SpaceTest extends TestCase
     /**
      * @test
      */
-    public function fromArray(): void
+    public function id(): void
     {
-        $value = self::faker()->spaceResponse();
-        $space = Space::fromArray($value);
+        $faker = self::faker();
+        $response = $faker->spaceResponse([
+            'id' => $id = $faker->numberBetween(1),
+        ]);
 
-        self::assertSame($value['id'], $space->id->value);
-        self::assertSame($value['name'], $space->name);
-        self::assertSame($value['domain'], $space->domain);
-        self::assertSame($value['version'], $space->version);
-        self::assertCount(\count($value['language_codes']), $space->languageCodes);
+        self::assertSame($id, (new Space($response))->id->value);
+    }
+
+    /**
+     * @test
+     */
+    public function idKeyMustExist(): void
+    {
+        $faker = self::faker();
+        $response = $faker->spaceResponse();
+        unset($response['id']);
+
+        self::expectException(\InvalidArgumentException::class);
+
+        new Space($response);
+    }
+
+    /**
+     * @test
+     */
+    public function name(): void
+    {
+        $faker = self::faker();
+        $response = $faker->spaceResponse([
+            'name' => $name = $faker->word(),
+        ]);
+
+        self::assertSame($name, (new Space($response))->name);
+    }
+
+    /**
+     * @test
+     */
+    public function nameKeyMustExist(): void
+    {
+        $faker = self::faker();
+        $response = $faker->spaceResponse();
+        unset($response['name']);
+
+        self::expectException(\InvalidArgumentException::class);
+
+        new Space($response);
     }
 
     /**
      * @test
      *
-     * @dataProvider provideRequiredKeys
+     * @dataProvider \Ergebnis\DataProvider\StringProvider::blank()
+     * @dataProvider \Ergebnis\DataProvider\StringProvider::empty()
      */
-    public function fromArrayThrowsExceptionIfKeysAreMissing(string $key): void
+    public function nameInvalid(string $value): void
     {
-        $value = self::faker()->spaceResponse();
-        unset($value[$key]);
+        $faker = self::faker();
+        $response = $faker->spaceResponse(['name' => $value]);
 
         self::expectException(\InvalidArgumentException::class);
 
-        Space::fromArray($value);
+        new Space($response);
     }
 
     /**
-     * @return \Generator<array{0: string}>
+     * @test
      */
-    public static function provideRequiredKeys(): iterable
+    public function version(): void
     {
-        yield from [
-            ['id'],
-            ['name'],
-            ['domain'],
-            ['version'],
-            ['language_codes'],
-        ];
+        $faker = self::faker();
+        $response = $faker->spaceResponse([
+            'version' => $version = $faker->numberBetween(1),
+        ]);
+
+        self::assertSame($version, (new Space($response))->version);
+    }
+
+    /**
+     * @test
+     */
+    public function versionKeyMustExist(): void
+    {
+        $faker = self::faker();
+        $response = $faker->spaceResponse();
+        unset($response['version']);
+
+        self::expectException(\InvalidArgumentException::class);
+
+        new Space($response);
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider \Ergebnis\DataProvider\IntProvider::lessThanZero()
+     * @dataProvider \Ergebnis\DataProvider\IntProvider::zero()
+     * @dataProvider \Ergebnis\DataProvider\StringProvider::arbitrary()
+     */
+    public function versionInvalid(int|string $value): void
+    {
+        $faker = self::faker();
+        $response = $faker->spaceResponse(['version' => $value]);
+
+        self::expectException(\InvalidArgumentException::class);
+
+        new Space($response);
+    }
+
+    /**
+     * @test
+     */
+    public function languageCodes(): void
+    {
+        $faker = self::faker();
+        $response = $faker->spaceResponse([
+            'language_codes' => $languageCodes = ['de', 'en', 'fr'],
+        ]);
+
+        self::assertSame($languageCodes, (new Space($response))->languageCodes);
+    }
+
+    /**
+     * @test
+     */
+    public function languageCodesKeyMustExist(): void
+    {
+        $faker = self::faker();
+        $response = $faker->spaceResponse();
+        unset($response['language_codes']);
+
+        self::expectException(\InvalidArgumentException::class);
+
+        new Space($response);
+    }
+
+    /**
+     * @test
+     *
+     * @dataProvider \Ergebnis\DataProvider\IntProvider::arbitrary()
+     * @dataProvider \Ergebnis\DataProvider\NullProvider::null()
+     * @dataProvider \Ergebnis\DataProvider\StringProvider::arbitrary()
+     */
+    public function languageCodesMustBeArray(mixed $value): void
+    {
+        $faker = self::faker();
+        $response = $faker->spaceResponse(['language_codes' => $value]);
+
+        self::expectException(\InvalidArgumentException::class);
+
+        new Space($response);
+    }
+
+    /**
+     * @test
+     */
+    public function languageCodesMustAllArray(): void
+    {
+        $faker = self::faker();
+        $response = $faker->spaceResponse(['language_codes' => ['de', $faker->randomNumber()]]);
+
+        self::expectException(\InvalidArgumentException::class);
+
+        new Space($response);
     }
 }

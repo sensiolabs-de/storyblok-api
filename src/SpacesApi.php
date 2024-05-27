@@ -13,7 +13,7 @@ declare(strict_types=1);
 
 namespace SensioLabs\Storyblok\Api;
 
-use SensioLabs\Storyblok\Api\Response\SpacesResponse;
+use SensioLabs\Storyblok\Api\Response\SpaceResponse;
 
 final readonly class SpacesApi implements SpacesApiInterface
 {
@@ -24,10 +24,10 @@ final readonly class SpacesApi implements SpacesApiInterface
     ) {
     }
 
-    public function me(): SpacesResponse
+    public function me(): SpaceResponse
     {
         $response = $this->client->request('GET', self::ENDPOINT.'/me');
 
-        return new SpacesResponse($response->toArray());
+        return new SpaceResponse($response->toArray());
     }
 }

@@ -16,18 +16,17 @@ namespace SensioLabs\Storyblok\Api\Response;
 use SensioLabs\Storyblok\Api\Domain\Value\Space;
 use Webmozart\Assert\Assert;
 
-final readonly class SpacesResponse
+final readonly class SpaceResponse
 {
     public Space $space;
 
     /**
      * @param array<string, mixed> $values
      */
-    public function __construct(
-        array $values,
-    ) {
+    public function __construct(array $values)
+    {
         Assert::keyExists($values, 'space');
         Assert::isArray($values['space']);
-        $this->space = Space::fromArray($values['space']);
+        $this->space = new Space($values['space']);
     }
 }

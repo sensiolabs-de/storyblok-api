@@ -14,7 +14,7 @@ declare(strict_types=1);
 namespace SensioLabs\Storyblok\Api\Tests\Unit\Response;
 
 use PHPUnit\Framework\TestCase;
-use SensioLabs\Storyblok\Api\Response\SpacesResponse;
+use SensioLabs\Storyblok\Api\Response\SpaceResponse;
 use SensioLabs\Storyblok\Api\Tests\Util\FakerTrait;
 
 final class SpaceResponseTest extends TestCase
@@ -30,7 +30,7 @@ final class SpaceResponseTest extends TestCase
             'space' => $values = self::faker()->spaceResponse(),
         ];
 
-        $space = (new SpacesResponse($response))->space;
+        $space = (new SpaceResponse($response))->space;
         self::assertSame($values['id'], $space->id->value);
         self::assertSame($values['name'], $space->name);
         self::assertSame($values['domain'], $space->domain);
@@ -50,7 +50,7 @@ final class SpaceResponseTest extends TestCase
 
         self::expectException(\InvalidArgumentException::class);
 
-        new SpacesResponse($values);
+        new SpaceResponse($values);
     }
 
     /**

@@ -18,38 +18,40 @@ use Webmozart\Assert\Assert;
 
 final readonly class Space
 {
-    /**
-     * @param list<string> $languageCodes
-     */
-    public function __construct(
-        public Id $id,
-        public string $name,
-        public string $domain,
-        public int $version,
-        public array $languageCodes,
-    ) {
-        TrimmedNonEmptyString::fromString($name);
-        TrimmedNonEmptyString::fromString($domain);
+    public Id $id;
+    public string $name;
+    public string $domain;
+    public int $version;
 
-        foreach ($languageCodes as $languageCode) {
-            TrimmedNonEmptyString::fromString($languageCode);
-        }
-    }
+    /**
+     * @var string[]
+     */
+    public array $languageCodes;
 
     /**
      * @param array<string, mixed> $values
      */
-    public static function fromArray(array $values): self
+    public function __construct(array $values)
     {
-        Assert::same(array_keys($values), ['id', 'name', 'domain', 'version', 'language_codes']);
+        Assert::keyExists($values, 'id');
+        $this->id = new Id($values['id']);
 
+        Assert::keyExists($values, 'name');
+        $this->name = TrimmedNonEmptyString::fromString($values['name'])->toString();
+
+        Assert::keyExists($values, 'domain');
+        $this->domain = TrimmedNonEmptyString::fromString($values['domain'])->toString();
+
+        Assert::keyExists($values, 'version');
+        Assert::integer($values['version']);
+        Assert::greaterThan($values['version'], 0);
+        $this->version = $values['version'];
+
+        Assert::keyExists($values, 'language_codes');
         Assert::isArray($values['language_codes']);
-
-        return new self(
-            new Id($values['id']),
-            $values['name'],
-            $values['domain'],
-            $values['version'],
+        Assert::allString($values['language_codes']);
+        $this->languageCodes = array_map(
+            static fn (string $languageCode): string => TrimmedNonEmptyString::fromString($languageCode)->toString(),
             $values['language_codes'],
         );
     }

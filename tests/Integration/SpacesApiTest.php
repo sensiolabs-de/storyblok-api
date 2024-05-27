@@ -15,7 +15,7 @@ namespace SensioLabs\Storyblok\Api\Tests\Integration;
 
 use PHPUnit\Framework\TestCase;
 use SensioLabs\Storyblok\Api\Domain\Value\Space;
-use SensioLabs\Storyblok\Api\Response\SpacesResponse;
+use SensioLabs\Storyblok\Api\Response\SpaceResponse;
 use SensioLabs\Storyblok\Api\SpacesApi;
 use SensioLabs\Storyblok\Api\StoryblokClient;
 use SensioLabs\Storyblok\Api\Tests\Util\FakerTrait;
@@ -44,7 +44,7 @@ final class SpacesApiTest extends TestCase
 
         $response = $api->me();
 
-        self::assertInstanceOf(SpacesResponse::class, $response);
+        self::assertInstanceOf(SpaceResponse::class, $response);
         self::assertInstanceOf(Space::class, $space = $response->space);
 
         self::assertSame(123, $space->id->value);

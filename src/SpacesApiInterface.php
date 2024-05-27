@@ -13,9 +13,9 @@ declare(strict_types=1);
 
 namespace SensioLabs\Storyblok\Api;
 
-use SensioLabs\Storyblok\Api\Response\SpacesResponse;
+use SensioLabs\Storyblok\Api\Response\SpaceResponse;
 
 interface SpacesApiInterface
 {
-    public function me(): SpacesResponse;
+    public function me(): SpaceResponse;
 }
