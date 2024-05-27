@@ -45,7 +45,7 @@ final readonly class StoriesResponse
         array $values,
     ) {
         Assert::keyExists($values, 'stories');
-        $this->stories = array_map(Story::fromArray(...), $values['stories']);
+        $this->stories = array_map(static fn (array $v) => new Story($v), $values['stories']);
 
         Assert::keyExists($values, 'cv');
         Assert::integer($values['cv']);

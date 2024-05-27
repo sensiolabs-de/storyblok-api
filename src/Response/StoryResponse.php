@@ -37,7 +37,8 @@ final readonly class StoryResponse
     public function __construct(array $values)
     {
         Assert::keyExists($values, 'story');
-        $this->story = Story::fromArray($values['story']);
+        Assert::isArray($values['story']);
+        $this->story = new Story($values['story']);
 
         Assert::keyExists($values, 'cv');
         Assert::integer($values['cv']);

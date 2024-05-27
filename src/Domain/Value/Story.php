@@ -19,87 +19,153 @@ use Webmozart\Assert\Assert;
 
 final readonly class Story
 {
-    public function __construct(
-        public Id $id,
-        public Uuid $uuid,
-        public ?Id $parentId,
-        public ?Uuid $groupId,
-        public string $name,
-        public string $slug,
-        public string $fullSlug,
-        public ?string $path,
-        public string $lang,
-        public int $position,
-        /**
-         * @var list<string>
-         */
-        public array $tagList,
-        public bool $isStartPage,
-        public \DateTimeImmutable $firstPublishedAt,
-        public \DateTimeImmutable $createdAt,
-        public \DateTimeImmutable $publishedAt,
-        // release_id
-        // sort_by_date
-        // meta_data
-        // alternates
-        // default_full_slug
-        // translated_slugs
-        public string $type,
-        /**
-         * @var array<string, mixed>
-         */
-        public array $content,
-    ) {
-        TrimmedNonEmptyString::fromString($this->name);
-        TrimmedNonEmptyString::fromString($this->slug);
-    }
+    public string $name;
+    public \DateTimeImmutable $createdAt;
+    public \DateTimeImmutable $publishedAt;
+    public Id $id;
+    public Uuid $uuid;
+
+    /**
+     * @var array<string, mixed>
+     */
+    public array $content;
+    public string $slug;
+    public string $fullSlug;
+    public ?string $sortByDate;
+    public int $position;
+
+    /**
+     * @var list<string>
+     */
+    public array $tagList;
+    public bool $isStartPage;
+    public ?Id $parentId;
+    public ?Uuid $groupId;
+    public \DateTimeImmutable $firstPublishedAt;
+    public ?int $releaseId;
+    public string $lang;
+    public ?string $path;
+
+    /**
+     * @var list<array<mixed>>
+     */
+    public array $alternates;
+    public ?string $defaultFullSlug;
+
+    /**
+     * @var list<TranslatedSlug>
+     */
+    public array $translatedSlugs;
 
     /**
      * @param array<string, mixed> $values
      */
-    public static function fromArray(array $values): self
+    public function __construct(array $values)
     {
-        foreach ([
-            'id', 'uuid', 'name', 'slug', 'full_slug', 'lang', 'position', 'tag_list',
-            'is_startpage', 'first_published_at', 'created_at', 'published_at', 'content',
-        ] as $key) {
-            Assert::keyExists($values, $key);
+        Assert::keyExists($values, 'id');
+        Assert::integer($values['id']);
+        $this->id = new Id($values['id']);
+
+        Assert::keyExists($values, 'uuid');
+        Assert::string($values['uuid']);
+        $this->uuid = new Uuid($values['uuid']);
+
+        Assert::keyExists($values, 'parent_id');
+        Assert::nullOrInteger($values['parent_id']);
+
+        if (null !== $values['parent_id']) {
+            $parentId = new Id($values['parent_id']);
         }
 
+        $this->parentId = $parentId ?? null;
+
+        Assert::keyExists($values, 'group_id');
+        Assert::nullOrString($values['group_id']);
+
+        if (null !== $values['group_id']) {
+            $groupId = new Uuid($values['group_id']);
+        }
+
+        $this->groupId = $groupId ?? null;
+
+        Assert::keyExists($values, 'name');
+        Assert::string($values['name']);
+        $this->name = TrimmedNonEmptyString::fromString($values['name'])->toString();
+
+        Assert::keyExists($values, 'slug');
+        Assert::string($values['slug']);
+        $this->slug = TrimmedNonEmptyString::fromString($values['slug'])->toString();
+
+        Assert::keyExists($values, 'full_slug');
+        Assert::string($values['full_slug']);
+        $this->fullSlug = TrimmedNonEmptyString::fromString($values['full_slug'])->toString();
+
+        Assert::keyExists($values, 'path');
+        Assert::nullOrString($values['path']);
+
+        if (null !== $values['path']) {
+            $path = TrimmedNonEmptyString::fromString($values['path'])->toString();
+        }
+
+        $this->path = $path ?? null;
+
+        Assert::keyExists($values, 'lang');
+        Assert::stringNotEmpty($values['lang']);
+        $this->lang = $values['lang'];
+
+        Assert::keyExists($values, 'position');
+        Assert::integer($values['position']);
+        $this->position = $values['position'];
+
+        Assert::keyExists($values, 'tag_list');
         Assert::isArray($values['tag_list']);
         Assert::allString($values['tag_list']);
+        $this->tagList = $values['tag_list'];
 
-        Assert::stringNotEmpty($values['lang']);
+        Assert::keyExists($values, 'is_startpage');
+        Assert::boolean($values['is_startpage']);
+        $this->isStartPage = $values['is_startpage'];
 
+        Assert::keyExists($values, 'published_at');
+        Assert::stringNotEmpty($values['published_at']);
+        $this->firstPublishedAt = DateTimeImmutable::createFromFormat('!Y-m-d\TH:i:s.v\Z', $values['first_published_at']);
+
+        Assert::keyExists($values, 'created_at');
+        Assert::stringNotEmpty($values['created_at']);
+        $this->createdAt = DateTimeImmutable::createFromFormat('!Y-m-d\TH:i:s.v\Z', $values['created_at']);
+
+        Assert::keyExists($values, 'published_at');
+        Assert::stringNotEmpty($values['published_at']);
+        $this->publishedAt = DateTimeImmutable::createFromFormat('!Y-m-d\TH:i:s.v\Z', $values['published_at']);
+
+        Assert::keyExists($values, 'content');
         Assert::isArray($values['content']);
-        Assert::keyExists($values['content'], 'component');
-        Assert::stringNotEmpty($values['content']['component']);
+        $this->content = $values['content'];
 
-        // $snakeToCamelCase = static fn (string $s) => preg_replace_callback('/_([a-z])/', static fn (array $matches) => strtoupper($matches[1]), $s);
-        // $values = array_combine(array_map($snakeToCamelCase, array_keys($values)), $values);
+        Assert::keyExists($values, 'sort_by_date');
+        Assert::nullOrString($values['sort_by_date']);
+        $this->sortByDate = $values['sort_by_date'];
 
-        return new self(
-            new Id($values['id']),
-            new Uuid($values['uuid']),
-            isset($values['parent_id']) ? new Id($values['parent_id']) : null,
-            isset($values['group_id']) ? new Uuid($values['group_id']) : null,
-            $values['name'],
-            $values['slug'],
-            $values['full_slug'],
-            $values['path'] ?? null,
-            $values['lang'],
-            $values['position'],
-            $values['tag_list'],
-            $values['is_startpage'],
-            DateTimeImmutable::createFromFormat('!Y-m-d\TH:i:s.v\Z', $values['first_published_at']),
-            DateTimeImmutable::createFromFormat('!Y-m-d\TH:i:s.v\Z', $values['created_at']),
-            DateTimeImmutable::createFromFormat('!Y-m-d\TH:i:s.v\Z', $values['published_at']),
-            // $values['meta_data'],
-            // $values['alternates'],
-            // $values['default_full_slug'],
-            // $values['translated_slugs'],
-            $values['content']['component'],
-            $values['content'],
-        );
+        Assert::keyExists($values, 'release_id');
+        Assert::nullOrInteger($values['release_id']);
+        $this->releaseId = $values['release_id'];
+
+        Assert::keyExists($values, 'alternates');
+        Assert::isArray($values['alternates']);
+        $this->alternates = $values['alternates'];
+
+        if (\array_key_exists('default_full_slug', $values)) {
+            Assert::string($values['default_full_slug']);
+            $defaultFullSlug = TrimmedNonEmptyString::fromString($values['default_full_slug'])->toString();
+        }
+
+        $this->defaultFullSlug = $defaultFullSlug ?? null;
+
+        if (\array_key_exists('translated_slugs', $values)) {
+            Assert::isArray($values['translated_slugs']);
+            $translatedSlugs = array_map(TranslatedSlug::fromArray(...), $values['translated_slugs']);
+        }
+
+        $this->translatedSlugs = $translatedSlugs ?? [];
     }
 }

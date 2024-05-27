@@ -83,6 +83,11 @@ final class StoryblokProvider extends BaseProvider
                 'name' => $this->generator->sentence(),
                 'slug' => $this->generator->slug(),
                 'full_slug' => $this->generator->slug(),
+                'parent_id' => null,
+                'group_id' => null,
+                'release_id' => null,
+                'path' => null,
+                'sort_by_date' => null,
                 'content' => [
                     'component' => $this->generator->word(),
                 ],
