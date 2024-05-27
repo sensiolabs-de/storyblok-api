@@ -21,37 +21,32 @@ use Webmozart\Assert\Assert;
  */
 final readonly class DatasourceEntry
 {
-    /**
-     * @param string      $name           The complete name provided for the datasource entry
-     * @param string      $value          Given value in the default dimension
-     * @param null|string $dimensionValue Given value in the requested dimension
-     */
-    public function __construct(
-        public Id $id,
-        public string $name,
-        public string $value,
-        public ?string $dimensionValue = null,
-    ) {
-        TrimmedNonEmptyString::fromString($name);
-        TrimmedNonEmptyString::fromString($value);
-
-        if (null !== $dimensionValue) {
-            TrimmedNonEmptyString::fromString($dimensionValue);
-        }
-    }
+    public Id $id;
+    public string $name;
+    public string $value;
+    public ?string $dimensionValue;
 
     /**
      * @param array<string, mixed> $values
      */
-    public static function fromArray(array $values): self
+    public function __construct(array $values)
     {
-        Assert::same(['id', 'name', 'value', 'dimension_value'], array_keys($values));
+        Assert::keyExists($values, 'id');
+        $this->id = new Id($values['id']);
 
-        return new self(
-            new Id($values['id']),
-            $values['name'],
-            $values['value'],
-            $values['dimension_value'],
-        );
+        Assert::keyExists($values, 'name');
+        $this->name = TrimmedNonEmptyString::fromString($values['name'])->toString();
+
+        Assert::keyExists($values, 'value');
+        $this->value = TrimmedNonEmptyString::fromString($values['value'])->toString();
+
+        Assert::keyExists($values, 'dimension_value');
+        $dimensionValue = null;
+
+        if (null !== $values['dimension_value']) {
+            $dimensionValue = TrimmedNonEmptyString::fromString($values['dimension_value'])->toString();
+        }
+
+        $this->dimensionValue = $dimensionValue;
     }
 }

@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace SensioLabs\Storyblok\Api\Domain\Value;
 
+use OskarStark\Value\TrimmedNonEmptyString;
 use Webmozart\Assert\Assert;
 
 /**
@@ -20,43 +21,43 @@ use Webmozart\Assert\Assert;
  */
 final readonly class Datasource
 {
-    public function __construct(
-        public Id $id,
-        /**
-         * The complete name provided for the datasource.
-         */
-        public string $name,
-        /**
-         * The unique slug of the datasource.
-         */
-        public string $slug,
-        /**
-         * The dimensions (e.g., per country, region, language, or other context) defined for the datasource.
-         *
-         * @var array<DatasourceDimension>
-         */
-        public array $dimensions,
-    ) {
-        Assert::notEmpty($name);
-        Assert::notEmpty($slug);
-        Assert::allIsInstanceOf($dimensions, DatasourceDimension::class);
-    }
+    public Id $id;
+
+    /**
+     * The complete name provided for the datasource.
+     */
+    public string $name;
+
+    /**
+     * The unique slug of the datasource.
+     */
+    public string $slug;
+
+    /**
+     * The dimensions (e.g., per country, region, language, or other context) defined for the datasource.
+     *
+     * @var list<DatasourceDimension>
+     */
+    public array $dimensions;
 
     /**
      * @param array<string, mixed> $values
      */
-    public static function fromArray(array $values): self
+    public function __construct(array $values)
     {
-        Assert::same(['id', 'name', 'slug', 'dimensions'], array_keys($values));
+        Assert::keyExists($values, 'id');
+        $this->id = new Id($values['id']);
 
-        Assert::isArray($values['dimensions']);
-        $dimensions = array_map(DatasourceDimension::fromArray(...), $values['dimensions']);
+        Assert::keyExists($values, 'name');
+        $this->name = TrimmedNonEmptyString::fromString($values['name'])->toString();
 
-        return new self(
-            new Id($values['id']),
-            $values['name'],
-            $values['slug'],
-            $dimensions,
+        Assert::keyExists($values, 'slug');
+        $this->slug = TrimmedNonEmptyString::fromString($values['slug'])->toString();
+
+        Assert::keyExists($values, 'dimensions');
+        $this->dimensions = array_map(
+            static fn (array $dimension) => new DatasourceDimension($dimension),
+            $values['dimensions'],
         );
     }
 }

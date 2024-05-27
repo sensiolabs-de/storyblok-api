@@ -22,32 +22,34 @@ use Webmozart\Assert\Assert;
  */
 final readonly class DatasourceDimension
 {
-    public function __construct(
-        public Id $id,
-        public string $name,
-        public string $entryValue,
-        public Id $datasourceId,
-        public \DateTimeImmutable $createdAt,
-        public \DateTimeImmutable $updatedAt,
-    ) {
-        TrimmedNonEmptyString::fromString($this->name);
-        TrimmedNonEmptyString::fromString($this->entryValue);
-    }
+    public Id $id;
+    public string $name;
+    public string $entryValue;
+    public Id $datasourceId;
+    public \DateTimeImmutable $createdAt;
+    public \DateTimeImmutable $updatedAt;
 
     /**
      * @param array<string, mixed> $values
      */
-    public static function fromArray(array $values): self
+    public function __construct(array $values)
     {
-        Assert::same(['id', 'name', 'entry_value', 'datasource_id', 'created_at', 'updated_at'], array_keys($values));
+        Assert::keyExists($values, 'id');
+        $this->id = new Id($values['id']);
 
-        return new self(
-            new Id($values['id']),
-            $values['name'],
-            $values['entry_value'],
-            new Id($values['datasource_id']),
-            DateTimeImmutable::createFromFormat('!Y-m-d\TH:i:s.v\Z', $values['created_at']),
-            DateTimeImmutable::createFromFormat('!Y-m-d\TH:i:s.v\Z', $values['updated_at']),
-        );
+        Assert::keyExists($values, 'name');
+        $this->name = TrimmedNonEmptyString::fromString($values['name'])->toString();
+
+        Assert::keyExists($values, 'entry_value');
+        $this->entryValue = TrimmedNonEmptyString::fromString($values['entry_value'])->toString();
+
+        Assert::keyExists($values, 'datasource_id');
+        $this->datasourceId = new Id($values['datasource_id']);
+
+        Assert::keyExists($values, 'created_at');
+        $this->createdAt = new DateTimeImmutable($values['created_at']);
+
+        Assert::keyExists($values, 'updated_at');
+        $this->updatedAt = new DateTimeImmutable($values['updated_at']);
     }
 }

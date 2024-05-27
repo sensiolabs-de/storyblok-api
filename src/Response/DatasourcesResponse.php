@@ -34,6 +34,9 @@ final readonly class DatasourcesResponse
         array $values,
     ) {
         Assert::keyExists($values, 'datasources');
-        $this->datasources = array_map(Datasource::fromArray(...), $values['datasources']);
+        $this->datasources = array_map(
+            static fn (array $datasource): Datasource => new Datasource($datasource),
+            $values['datasources'],
+        );
     }
 }

@@ -27,6 +27,6 @@ final readonly class DatasourceResponse
         array $values,
     ) {
         Assert::keyExists($values, 'datasource');
-        $this->datasource = Datasource::fromArray($values['datasource']);
+        $this->datasource = new Datasource($values['datasource']);
     }
 }
