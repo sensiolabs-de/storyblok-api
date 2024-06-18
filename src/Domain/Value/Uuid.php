@@ -15,6 +15,7 @@ namespace SensioLabs\Storyblok\Api\Domain\Value;
 
 use OskarStark\Value\TrimmedNonEmptyString;
 use Webmozart\Assert\Assert;
+use function Symfony\Component\String\u;
 
 readonly class Uuid implements \Stringable
 {
@@ -22,6 +23,8 @@ readonly class Uuid implements \Stringable
         public string $value,
     ) {
         TrimmedNonEmptyString::fromString($value);
+        // In rich text editor the UUID is prefixed with 'i-'
+        $value = u($this->value)->trimStart('i-')->toString();
         Assert::uuid($value);
         Assert::true(strtolower($this->value) === $this->value, 'Uuid must be lowercase');
     }
