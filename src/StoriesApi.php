@@ -30,7 +30,9 @@ final class StoriesApi implements StoriesApiInterface
 {
     private const string ENDPOINT = '/v2/cdn/stories';
     private Version $version;
-
+/**
+* @param 'published'|'draft' $version
+*/
     public function __construct(
         private StoryblokClientInterface $client,
         string $version = 'published', // we inject a string here, because Symfony DI does not support enums
