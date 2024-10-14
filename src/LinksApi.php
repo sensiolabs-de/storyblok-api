@@ -28,6 +28,9 @@ final class LinksApi implements LinksApiInterface
     private const string ENDPOINT = '/v2/cdn/links';
     private Version $version;
 
+    /**
+     * @param 'draft'|'published' $version
+     */
     public function __construct(
         private StoryblokClientInterface $client,
         string $version = 'published', // we inject a string here, because Symfony DI does not support enums
