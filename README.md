@@ -93,7 +93,7 @@ use SensioLabs\Storyblok\Api\Domain\Value\Dto\Version;
 
 $client = new StoryblokClient(/* ... */);
 
-$storiesApi = new StoriesApi($client, Version::Draft);
+$storiesApi = new StoriesApi($client, Version::Published);
 $response = $storiesApi->bySlug(
     locale: 'de',
     slug: '/my-story/',
