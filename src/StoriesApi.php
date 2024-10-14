@@ -33,7 +33,7 @@ final class StoriesApi implements StoriesApiInterface
 
     public function __construct(
         private StoryblokClientInterface $client,
-        string $version, // we inject a string here, because Symfony DI does not support enums
+        string $version = 'published', // we inject a string here, because Symfony DI does not support enums
     ) {
         $this->version = Version::from($version);
     }
