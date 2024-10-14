@@ -73,7 +73,6 @@ $response = $storiesApi->all(locale: 'de');
 ```php
 use SensioLabs\Storyblok\Api\StoriesApi;
 use SensioLabs\Storyblok\Api\StoryblokClient;
-use SensioLabs\Storyblok\Api\Domain\Value\Dto\Pagination;
 use SensioLabs\Storyblok\Api\Domain\Value\Dto\Version;
 
 $client = new StoryblokClient(/* ... */);
@@ -90,7 +89,6 @@ $response = $storiesApi->bySlug(
 ```php
 use SensioLabs\Storyblok\Api\StoriesApi;
 use SensioLabs\Storyblok\Api\StoryblokClient;
-use SensioLabs\Storyblok\Api\Domain\Value\Dto\Pagination;
 use SensioLabs\Storyblok\Api\Domain\Value\Dto\Version;
 
 $client = new StoryblokClient(/* ... */);
